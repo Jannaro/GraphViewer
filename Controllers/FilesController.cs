@@ -35,11 +35,12 @@ namespace GraphViewer.Controllers
 
       List<string> fileList = new List<string>();
       string path = Path.Combine(Path.GetTempPath(), "GraphViewerApp");
-      var fileName = "";
+      if (!Directory.Exists(path))
+        Directory.CreateDirectory(path);
 
       foreach (var file in files)
       {
-        fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
 
         var supportedTypes = new[] { "jpg", "jpeg", "png", "gif", "bmp" };
         var fileExt = Path.GetExtension(fileName).Substring(1);
