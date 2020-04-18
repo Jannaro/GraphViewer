@@ -50,7 +50,7 @@ export class AppComponent {
   onFilesDropped(fileList: FileList): void {
     console.log("FileList: " + fileList);
     for (let i = 0; i < fileList.length; i++) {
-      this.files.push(fileList[i]);
+      this.filesToUpload.push(fileList[i]);
     }
     this.uploadFiles();  
   }
@@ -60,7 +60,7 @@ export class AppComponent {
     fileUpload.onchange = () => {  
       for (let index = 0; index < fileUpload.files.length; index++)  
       {  
-        this.files.push(fileUpload.files[index]);   
+        this.filesToUpload.push(fileUpload.files[index]);   
       }  
       this.uploadFiles();  
     };  
@@ -69,15 +69,20 @@ export class AppComponent {
 
   private uploadFiles() { 
     this.fileUpload.nativeElement.value = '';  
-    this.files.forEach(file => {  
+    this.filesToUpload.forEach(file => {  
       this.uploadFile(file);  
     });
   }
 
   uploadFile(file) {  
+    if(~this.filesToDisplay.findIndex((element: File) => 
+        element.name == file.name && element.size == file.size 
+                 && element.lastModified == file.lastModified)) {
+      return;
+    }
+    let self = this;
     const formData: any = new FormData();  
     formData.append('file', file);  
-    //console.log(formData.entries())
     file.inProgress = true;  
     this.uploadService.upload(formData).pipe(  
       map(event => {  
@@ -91,10 +96,24 @@ export class AppComponent {
       }),  
       catchError((error: HttpErrorResponse) => {  
         file.inProgress = false;  
+        let pos = self.filesToUpload.indexOf(file);
+        if(pos != -1) {
+          self.filesToUpload.splice(pos, 1);
+        }
         return of(`${file.name} upload failed.`);  
       })).subscribe((event: any) => {  
         if (typeof (event) === 'object') {  
-          console.log(event.body);  
+          console.log(event.body); 
+          if(event.body[0] != file.name) {
+            alert("Unexpected file name!")
+          }
+          delete file.inProgress;
+          delete file.progress;
+          self.filesToDisplay.push(file); 
+          let pos = self.filesToUpload.indexOf(file);
+          if(pos != -1) {
+            self.filesToUpload.splice(pos, 1);
+          }
         }  
       });  
   }
@@ -103,5 +122,6 @@ export class AppComponent {
   @ViewChild("fileUpload", {static: false}) fileUpload: ElementRef;
 
   title = 'Statistica graphs viewer';
-  files: File[] = [];
+  filesToUpload: File[] = [];
+  filesToDisplay: File[] = [];
 }
