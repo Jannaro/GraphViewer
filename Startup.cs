@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,14 @@ namespace GraphViewer
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      services.Configure<KestrelServerOptions>(options =>
+      {
+        options.AllowSynchronousIO = true;
+      });
+      services.Configure<IISServerOptions>(options =>
+      {
+        options.AllowSynchronousIO = true;
+      });
       services.AddControllersWithViews();
       // In production, the Angular files will be served from this directory
       services.AddSpaStaticFiles(configuration =>
@@ -63,6 +72,7 @@ namespace GraphViewer
 
         if (env.IsDevelopment())
         {
+          //spa.UseAngularCliServer(npmScript: "start");
           spa.UseProxyToSpaDevelopmentServer("http://localhost:4200/webpack-dev-server/");
         }
       });

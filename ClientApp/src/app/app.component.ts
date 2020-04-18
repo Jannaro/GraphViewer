@@ -1,5 +1,9 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-
+import { HttpEventType, HttpErrorResponse } from '@angular/common/http';
+import { of } from 'rxjs';  
+import { catchError, map } from 'rxjs/operators';  
+import { UploadService } from  './upload.service';
+/*
 class FileData {
   constructor(file: File) {
     let self = this;
@@ -28,7 +32,7 @@ class FileData {
   private reader: FileReader;
   private inProgress = false;
   private progress: 0
-}
+}*/
 
 @Component({
   selector: 'app-root',
@@ -36,8 +40,7 @@ class FileData {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor() {
-    this.workingDir = "";
+  constructor(private uploadService: UploadService) {
   }
   ngOnInit() {
   }
@@ -47,16 +50,17 @@ export class AppComponent {
   onFilesDropped(fileList: FileList): void {
     console.log("FileList: " + fileList);
     for (let i = 0; i < fileList.length; i++) {
-      this.files.push(new FileData(fileList[i]));
+      this.files.push(fileList[i]);
     }
     this.uploadFiles();  
   }
+
   onUploadClick() : void {
     const fileUpload = this.fileUpload.nativeElement;
     fileUpload.onchange = () => {  
       for (let index = 0; index < fileUpload.files.length; index++)  
       {  
-        this.files.push(new FileData(fileUpload.files[index]));   
+        this.files.push(fileUpload.files[index]);   
       }  
       this.uploadFiles();  
     };  
@@ -64,16 +68,40 @@ export class AppComponent {
   }
 
   private uploadFiles() { 
-    for(let file of this.files) {
-      file.readAsDataURL(); 
-    }
+    this.fileUpload.nativeElement.value = '';  
+    this.files.forEach(file => {  
+      this.uploadFile(file);  
+    });
+  }
 
-  } 
+  uploadFile(file) {  
+    const formData: any = new FormData();  
+    formData.append('file', file);  
+    //console.log(formData.entries())
+    file.inProgress = true;  
+    this.uploadService.upload(formData).pipe(  
+      map(event => {  
+        switch (event.type) {  
+          case HttpEventType.UploadProgress:  
+            file.progress = Math.round(event.loaded * 100 / event.total);  
+            break;  
+          case HttpEventType.Response:  
+            return event;  
+        }  
+      }),  
+      catchError((error: HttpErrorResponse) => {  
+        file.inProgress = false;  
+        return of(`${file.name} upload failed.`);  
+      })).subscribe((event: any) => {  
+        if (typeof (event) === 'object') {  
+          console.log(event.body);  
+        }  
+      });  
+  }
 
 
   @ViewChild("fileUpload", {static: false}) fileUpload: ElementRef;
 
   title = 'Statistica graphs viewer';
-  workingDir: string;
-  files: FileData[] = [];
+  files: File[] = [];
 }
