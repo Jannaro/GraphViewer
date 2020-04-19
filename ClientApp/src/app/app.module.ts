@@ -11,6 +11,8 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card'; 
+import { MatListModule } from '@angular/material/list';
 
 import { FileDropDirective } from './file-drop.directive';
 
@@ -29,7 +31,9 @@ import { FileDropDirective } from './file-drop.directive';
     MatSliderModule,
     MatSelectModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    MatCardModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]
