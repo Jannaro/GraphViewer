@@ -1,38 +1,10 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, Inject } from '@angular/core';
 import { HttpEventType, HttpErrorResponse } from '@angular/common/http';
+import { MatSelectionList } from '@angular/material/list';
+
 import { of } from 'rxjs';  
 import { catchError, map } from 'rxjs/operators';  
 import { UploadService } from  './upload.service';
-/*
-class FileData {
-  constructor(file: File) {
-    let self = this;
-    this.file = file;
-    this.reader = new FileReader();
-    this.reader.onload = function(event) {
-      self.data = event.target.result;
-      console.log("File contents: " + self.data);
-    };
-    this.reader.onerror = function(event) {
-      console.error("File could not be read! Code " + event.target.error.code);
-    };
-  }
-  readAsArrayBuffer() : void {
-    this.reader.readAsArrayBuffer(this.file);
-  }
-  readAsDataURL() : void {
-    this.reader.readAsDataURL(this.file);
-  }
-  readAsText() : void {
-    this.reader.readAsText(this.file);
-  }
-
-  private file: File;
-  private data: any; // ArrayBuffer
-  private reader: FileReader;
-  private inProgress = false;
-  private progress: 0
-}*/
 
 @Component({
   selector: 'app-root',
@@ -40,7 +12,9 @@ class FileData {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(private uploadService: UploadService) {
+  SERVER_URL: string = "Load"; 
+  constructor(private uploadService: UploadService, @Inject('BASE_URL') baseUrl: string) {
+    this.serverUrl = baseUrl + this.SERVER_URL;
   }
   ngOnInit() {
   }
@@ -119,9 +93,12 @@ export class AppComponent {
   }
 
 
-  @ViewChild("fileUpload", {static: false}) fileUpload: ElementRef;
+  @ViewChild("fileUpload") fileUpload: ElementRef;
+  @ViewChild("fileList") fileList: MatSelectionList;
 
   title = 'Statistica graphs viewer';
   filesToUpload: File[] = [];
   filesToDisplay: File[] = [];
+  selectedFile: File;
+  serverUrl: string;
 }
