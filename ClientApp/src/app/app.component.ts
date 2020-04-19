@@ -12,7 +12,7 @@ import { UploadService } from  './upload.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  SERVER_URL: string = "Load"; 
+  SERVER_URL: string = "Load/"; 
   constructor(private uploadService: UploadService, @Inject('BASE_URL') baseUrl: string) {
     this.serverUrl = baseUrl + this.SERVER_URL;
   }

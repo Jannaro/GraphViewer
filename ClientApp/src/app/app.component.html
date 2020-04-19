@@ -38,10 +38,9 @@
       </div>
     </mat-sidenav>
     <mat-sidenav-content style="min-height:320px;">
-      Main content selected element: {{ selectedFile ? selectedFile.name : "Nothing yet" }}
       <div *ngIf="selectedFile">
-        {{serverUrl + selectedFile.name}}
-        <img src="{{serverUrl + selectedFile.name}}" alt="Image" height="42" width="42"> 
+        Image: {{serverUrl + selectedFile.name}}<br>
+        <img src="{{serverUrl + selectedFile.name}}" alt="Image" height="600" width="800"> 
       </div>
       <form class="content" role="main">
       </form>
