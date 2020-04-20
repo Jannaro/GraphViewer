@@ -16,17 +16,19 @@ export class AppComponent {
   constructor(private uploadService: UploadService, @Inject('BASE_URL') baseUrl: string) {
     this.serverUrl = baseUrl + this.SERVER_URL;
   }
+
   ngOnInit() {
   }
   selectWorkDir(): void {
     console.log("Button clicked!");
   }
-  onFilesDropped(fileList: FileList): void {
-    console.log("FileList: " + fileList);
-    for (let i = 0; i < fileList.length; i++) {
-      this.filesToUpload.push(fileList[i]);
-    }
-    this.uploadFiles();  
+
+  onAboutClick() {
+    this.aboutOn = true;  
+  }
+
+  onAboutClose() {
+    this.aboutOn = false;  
   }
 
   onUploadClick() : void {
@@ -44,6 +46,14 @@ export class AppComponent {
   onSelectionChange = (event: MatSelectionListChange) => {
     console.log(event.option.value);
     this.selectedFile = event.option.value;
+  }
+
+  onFilesDropped(fileList: FileList): void {
+    console.log("FileList: " + fileList);
+    for (let i = 0; i < fileList.length; i++) {
+      this.filesToUpload.push(fileList[i]);
+    }
+    this.uploadFiles();  
   }
 
   private uploadFiles() { 
@@ -106,4 +116,5 @@ export class AppComponent {
   filesToDisplay: File[] = [];
   selectedFile: File;
   serverUrl: string;
+  aboutOn: boolean = false;
 }
