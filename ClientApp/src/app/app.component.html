@@ -24,23 +24,22 @@
   <mat-sidenav-container>
     <mat-sidenav mode="side" opened>
       <div *ngIf="!filesToDisplay.length">
-        <span style="height:24px;margin:24px;font-size:large;font-weight:600;">No files selected</span>
+        <span style="height:24px;margin:24px;font-size:medium;font-weight:600;">No files selected</span>
       </div>
       <div *ngIf="filesToDisplay.length">
-        <mat-selection-list mat-flat-button *ngFor="let file of filesToDisplay" #fileList 
-                                            [multiple]="false" (click)="selectedFile=file">
-          <mat-list-item>
-            <mat-card-content>
-              {{ file.name }}
-            </mat-card-content>
-          </mat-list-item>
+        <mat-selection-list mat-flat-button [multiple]="false" 
+                                  (selectionChange)="onSelectionChange($event)">
+          <mat-list-option *ngFor="let file of filesToDisplay" [value]="file" 
+                                          color="primary" style="margin:10px;">
+            {{ file.name }}
+          </mat-list-option>
         </mat-selection-list>
       </div>
     </mat-sidenav>
     <mat-sidenav-content style="min-height:320px;">
       <div *ngIf="selectedFile">
-        Image: {{serverUrl + selectedFile.name}}<br>
-        <img src="{{serverUrl + selectedFile.name}}" alt="Image" height="600" width="800"> 
+        <img src="{{serverUrl + selectedFile.name}}" alt="{{serverUrl + selectedFile.name}}" 
+                                                height="600" width="800" style="margin:20px;"> 
       </div>
       <form class="content" role="main">
       </form>

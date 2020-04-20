@@ -25,8 +25,9 @@ namespace GraphViewer.Controllers
     {
       string path = Path.Combine(Path.GetTempPath(), "GraphViewerApp");
       path = Path.Combine(path, name);
-      var image = System.IO.File.OpenRead(path);
-      return File(image, "image/jpeg");
+      //var image = System.IO.File.OpenRead(path);
+      //return File(image, "image/jpeg");
+      return PhysicalFile(path, "image/jpeg");
     }
 
     // POST: api/Load

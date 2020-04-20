@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, Inject } from '@angular/core';
 import { HttpEventType, HttpErrorResponse } from '@angular/common/http';
-import { MatSelectionList } from '@angular/material/list';
+import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 
 import { of } from 'rxjs';  
 import { catchError, map } from 'rxjs/operators';  
@@ -39,6 +39,11 @@ export class AppComponent {
       this.uploadFiles();  
     };  
     fileUpload.click();  
+  }
+
+  onSelectionChange = (event: MatSelectionListChange) => {
+    console.log(event.option.value);
+    this.selectedFile = event.option.value;
   }
 
   private uploadFiles() { 
@@ -94,7 +99,7 @@ export class AppComponent {
 
 
   @ViewChild("fileUpload") fileUpload: ElementRef;
-  @ViewChild("fileList") fileList: MatSelectionList;
+  //@ViewChild("fileList") fileList: MatSelectionList;
 
   title = 'Statistica graphs viewer';
   filesToUpload: File[] = [];
